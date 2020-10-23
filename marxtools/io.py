@@ -85,12 +85,13 @@ def marx_bin_to_table(dirname, cols=None):
     tab = Table()
     if cols is None:
         cols = glob(path.join(dirname, '*.dat'))
+        cols = [c.replace('.dat', '') for c in cols]
     for dat in cols:
         try:
             data, colname = read_marx_file(path.join(dirname, dat + '.dat'))
+            tab[colname] = data
         except IOError as e:
-            warn('Skipping column ' + dat + 'because: ' + e.message)
-        tab[colname] = data
+            warn('Skipping column ' + dat + 'because: {}'.format(e))
 
     marxpartab = Table.read(path.join(dirname, 'marx.par'),
                             format='ascii.no_header')
